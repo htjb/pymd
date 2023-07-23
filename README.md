@@ -13,6 +13,4 @@ Can run the interpreter on the example file with the following
 python interpreter.py example.md
 ```
 
-and it will output an example.pdf.
-
-![PDF](https://github.com/htjb/pymd/raw/main/example.pdf)
+and it will output an ![example.pdf](https://github.com/htjb/pymd/raw/main/example.pdf).
