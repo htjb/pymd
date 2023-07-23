@@ -4,10 +4,31 @@ import pdfkit
 from operator import itemgetter
 from itertools import groupby
 
+def header_parse(fc, header_md, header_html):
+    headers = [m.start() for m in re.finditer(header_md, fc)]
+    fc = list(fc)
+    for i, h in enumerate(reversed(headers)):
+        part = fc[h:]
+        part = ''.join(part)
+        next_break = [m.start() for m in re.finditer('\n', part)]
+        idx = next(x for x, val in enumerate(next_break)
+                                  if val > 1)
+        fc.insert(h + next_break[1], '</' + header_html +'>')
+        fc[h: h + 1 + int(list(header_html)[-1])] = \
+            '<' + header_html + '>'
+    fc = ''.join(fc)
+    return fc
+
 file = sys.argv[1]
 file_handle = file.split('.')[0]
 with open(file) as file:
     fc = file.read()
+    
+    fc = header_parse(fc, '\n####', 'h4')
+    fc = header_parse(fc, '\n###', 'h3')
+    fc = header_parse(fc, '\n##', 'h2')
+    fc = header_parse(fc, '\n#', 'h1')
+    
     bolds = [m.start() for m in re.finditer('\*\*', fc)]
     fc = list(fc)
     for i, b in enumerate(reversed(bolds)):
@@ -27,7 +48,7 @@ with open(file) as file:
     
     fc = ''.join(fc)
     header = [m.start() for m in re.finditer('=', fc)]
-    print(header)
+    
     fc = list(fc)
 
     ranges = []
